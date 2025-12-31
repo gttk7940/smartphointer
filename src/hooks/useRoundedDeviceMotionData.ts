@@ -1,3 +1,5 @@
+import type { DeviceMotionData, RoundedDeviceMotionData } from '../domain/type'
+
 export type UseRoundedDeviceMotionData = RoundedDeviceMotionData
 
 export const useRoundedDeviceMotionData = ({

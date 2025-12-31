@@ -1,8 +1,5 @@
-import { FC } from 'react';
-import { createUseStyles } from 'react-jss';
-import { List, ListItem, ListList } from 'semantic-ui-react';
-
-const useStyles = createUseStyles({})
+import type { FC } from 'react'
+import type { DeviceMotionData } from '../domain/type'
 
 type InformationAreaProps = DeviceMotionData
 
@@ -12,48 +9,33 @@ export const InformationArea: FC<InformationAreaProps> = ({
   rotationRate,
   interval,
 }) => {
-  const classes = useStyles()
   return (
-    <List bulleted>
-      <ListItem>
+    <ul>
+      <li>
         acceleration
-        <ListList>
-          x: {acceleration?.x}
-        </ListList>
-        <ListList>
-          y: {acceleration?.y}
-        </ListList>
-        <ListList>
-          z: {acceleration?.z}
-        </ListList>
-      </ListItem>
-      <ListItem>
+        <ul>
+          <li>x: {acceleration?.x}</li>
+          <li>y: {acceleration?.y}</li>
+          <li>z: {acceleration?.z}</li>
+        </ul>
+      </li>
+      <li>
         accelerationIncludingGravity
-        <ListList>
-          x: {accelerationIncludingGravity?.x}
-        </ListList>
-        <ListList>
-          y: {accelerationIncludingGravity?.y}
-        </ListList>
-        <ListList>
-          z: {accelerationIncludingGravity?.z}
-        </ListList>
-      </ListItem>
-      <ListItem>
+        <ul>
+          <li>x: {accelerationIncludingGravity?.x}</li>
+          <li>y: {accelerationIncludingGravity?.y}</li>
+          <li>z: {accelerationIncludingGravity?.z}</li>
+        </ul>
+      </li>
+      <li>
         rotationRate
-        <ListList>
-          alpha: {rotationRate?.alpha}
-        </ListList>
-        <ListList>
-          beta: {rotationRate?.beta}
-        </ListList>
-        <ListList>
-          gamma: {rotationRate?.gamma}
-        </ListList>
-      </ListItem>
-      <ListItem>
-        interval: {interval}
-      </ListItem>
-    </List>
+        <ul>
+          <li>alpha: {rotationRate?.alpha}</li>
+          <li>beta: {rotationRate?.beta}</li>
+          <li>gamma: {rotationRate?.gamma}</li>
+        </ul>
+      </li>
+      <li>interval: {interval}</li>
+    </ul>
   )
 }
