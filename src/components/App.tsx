@@ -1,11 +1,11 @@
 import type { FC } from 'react'
 import { isMobile } from "react-device-detect";
-import { NotMobileWindow } from './NotMobileWindow';
-import { MobileWindow } from './MobileWindow';
+import { Monitor } from './Monitor';
+import { Controller } from './Controller';
 
 export const App: FC = () => {
-  if (!isMobile) {
-    return <NotMobileWindow />
+  if (isMobile) {
+    return <Controller />
   }
-  return <MobileWindow />
+  return <Monitor />
 }

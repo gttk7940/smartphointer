@@ -3,7 +3,7 @@ import { InformationArea } from './InformationArea';
 import { useDeviceOrientation } from '../hooks/useDeviceOrientation';
 import { useRoundedDeviceOrientationData } from '../hooks/useRoundedDeviceOrientationData';
 
-export const MobileWindow: FC = () => {
+export const Controller: FC = () => {
   const {
     orientation: originalOrientation,
     handleRequestDeviceOrientationPermission,
