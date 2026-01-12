@@ -26,10 +26,10 @@ export const InformationArea: FC<InformationAreaProps> = ({
     const plotWidth = width - padding * 2
     const plotHeight = height - padding * 2
 
-    const xValue = Math.max(-90, Math.min(90, orientation.gamma))
+    const xValue = Math.max(-180, Math.min(180, orientation.alpha))
     const yValue = Math.max(-180, Math.min(180, orientation.beta))
 
-    const x = padding + ((xValue + 90) / 180) * plotWidth
+    const x = padding + ((xValue + 180) / 360) * plotWidth
     const y = padding + ((-yValue + 180) / 360) * plotHeight
 
     ctx.clearRect(0, 0, width, height)
