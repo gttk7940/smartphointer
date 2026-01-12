@@ -1,43 +1,23 @@
 import type { FC } from 'react'
 import { InformationArea } from './InformationArea';
-import { useDeviceMotion } from '../hooks/useDeviceMotion';
-import { useRoundedDeviceMotionData } from '../hooks/useRoundedDeviceMotionData';
+import { useDeviceOrientation } from '../hooks/useDeviceOrientation';
+import { useRoundedDeviceOrientationData } from '../hooks/useRoundedDeviceOrientationData';
 
 export const MobileWindow: FC = () => {
   const {
-    acceleration: originalAcceleration,
-    accelerationIncludingGravity: originalAccelerationIncludingGravity,
-    rotationRate: originalRotationRate,
-    interval: originalInterval,
     orientation: originalOrientation,
-    handleRequestDeviceMotionPermission,
-  } = useDeviceMotion()
+    handleRequestDeviceOrientationPermission,
+  } = useDeviceOrientation()
 
-  const {
-    acceleration,
-    accelerationIncludingGravity,
-    rotationRate,
-    interval,
-    orientation,
-  } = useRoundedDeviceMotionData({
-    acceleration: originalAcceleration,
-    accelerationIncludingGravity: originalAccelerationIncludingGravity,
-    rotationRate: originalRotationRate,
-    interval: originalInterval,
-    orientation: originalOrientation,
-  })
+  const orientation = useRoundedDeviceOrientationData(originalOrientation)
 
   return (
     <>
       <InformationArea
-        acceleration={acceleration}
-        accelerationIncludingGravity={accelerationIncludingGravity}
-        rotationRate={rotationRate}
-        interval={interval}
         orientation={orientation}
       />
-      <button onClick={handleRequestDeviceMotionPermission}>
-        DeviceMotionEvent.requestPermission()
+      <button onClick={handleRequestDeviceOrientationPermission}>
+        DeviceOrientationEvent.requestPermission()
       </button>
     </>
   )
