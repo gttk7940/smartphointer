@@ -1,5 +1,4 @@
 import type { FC } from 'react'
-import { PointerArea } from './PointerArea';
 import { InformationArea } from './InformationArea';
 import { useDeviceMotion } from '../hooks/useDeviceMotion';
 import { useRoundedDeviceMotionData } from '../hooks/useRoundedDeviceMotionData';
@@ -27,7 +26,6 @@ export const MobileWindow: FC = () => {
 
   return (
     <>
-      <PointerArea />
       <InformationArea
         acceleration={acceleration}
         accelerationIncludingGravity={accelerationIncludingGravity}
