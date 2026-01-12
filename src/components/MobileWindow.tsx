@@ -9,6 +9,7 @@ export const MobileWindow: FC = () => {
     accelerationIncludingGravity: originalAccelerationIncludingGravity,
     rotationRate: originalRotationRate,
     interval: originalInterval,
+    orientation: originalOrientation,
     handleRequestDeviceMotionPermission,
   } = useDeviceMotion()
 
@@ -17,11 +18,13 @@ export const MobileWindow: FC = () => {
     accelerationIncludingGravity,
     rotationRate,
     interval,
+    orientation,
   } = useRoundedDeviceMotionData({
     acceleration: originalAcceleration,
     accelerationIncludingGravity: originalAccelerationIncludingGravity,
     rotationRate: originalRotationRate,
     interval: originalInterval,
+    orientation: originalOrientation,
   })
 
   return (
@@ -31,6 +34,7 @@ export const MobileWindow: FC = () => {
         accelerationIncludingGravity={accelerationIncludingGravity}
         rotationRate={rotationRate}
         interval={interval}
+        orientation={orientation}
       />
       <button onClick={handleRequestDeviceMotionPermission}>
         DeviceMotionEvent.requestPermission()

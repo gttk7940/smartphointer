@@ -1,5 +1,9 @@
 import { useState } from 'react'
-import type { DeviceMotionData, DeviceMotionEventWithRequestPermission } from '../domain/type'
+import type {
+  DeviceMotionData,
+  DeviceMotionEventWithRequestPermission,
+  DeviceOrientationEventWithRequestPermission,
+} from '../domain/type'
 
 export type UseDeviceMotion = DeviceMotionData & {
   handleRequestDeviceMotionPermission: () => void
@@ -11,19 +15,33 @@ export const useDeviceMotion = (): UseDeviceMotion => {
     accelerationIncludingGravity: null,
     rotationRate: null,
     interval: 0,
+    orientation: null,
   })
 
   const handleDeviceMotion = (event: DeviceMotionEvent) => {
-    setDeviceMotion({
+    setDeviceMotion(prev => ({
+      ...prev,
       acceleration: event.acceleration,
       accelerationIncludingGravity: event.accelerationIncludingGravity,
       rotationRate: event.rotationRate,
       interval: event.interval,
-    })
+    }))
+  }
+
+  const handleDeviceOrientation = (event: DeviceOrientationEvent) => {
+    setDeviceMotion(prev => ({
+      ...prev,
+      orientation: {
+        alpha: event.alpha,
+        beta: event.beta,
+        gamma: event.gamma,
+      },
+    }))
   }
 
   const handleRequestDeviceMotionPermission = () => {
     const DeviceMotionEvent = window.DeviceMotionEvent as unknown as DeviceMotionEventWithRequestPermission
+    const DeviceOrientationEvent = window.DeviceOrientationEvent as unknown as DeviceOrientationEventWithRequestPermission
     if (
       DeviceMotionEvent &&
       typeof DeviceMotionEvent.requestPermission === 'function'
@@ -51,6 +69,34 @@ export const useDeviceMotion = (): UseDeviceMotion => {
         handleDeviceMotion(e)
       })
     }
+
+    if (
+      DeviceOrientationEvent &&
+      typeof DeviceOrientationEvent.requestPermission === 'function'
+    ) {
+      // iOS 13+ の Safari
+      // 許可を取得
+      DeviceOrientationEvent.requestPermission()
+      .then(permissionState => {
+        if (permissionState === 'granted') {
+          // 許可を得られた場合、deviceorientationをイベントリスナーに追加
+          window.addEventListener('deviceorientation', e => {
+            // deviceorientationのイベント処理
+            handleDeviceOrientation(e)
+          })
+        } else {
+          // 許可を得られなかった場合の処理
+          window.alert('Device orientation permission denied')
+        }
+      })
+      .catch(console.error) // https通信でない場合などで許可を取得できなかった場合
+    } else {
+      // 上記以外のブラウザ
+      window.addEventListener('deviceorientation', e => {
+        // deviceorientationのイベント処理
+        handleDeviceOrientation(e)
+      })
+    }
   }
   
   return {
@@ -58,6 +104,7 @@ export const useDeviceMotion = (): UseDeviceMotion => {
     accelerationIncludingGravity: deviceMotion.accelerationIncludingGravity,
     rotationRate: deviceMotion.rotationRate,
     interval: deviceMotion.interval,
+    orientation: deviceMotion.orientation,
     handleRequestDeviceMotionPermission: handleRequestDeviceMotionPermission,
   }
 }

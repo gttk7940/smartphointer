@@ -8,6 +8,7 @@ export const InformationArea: FC<InformationAreaProps> = ({
   accelerationIncludingGravity,
   rotationRate,
   interval,
+  orientation,
 }) => {
   return (
     <ul>
@@ -33,6 +34,14 @@ export const InformationArea: FC<InformationAreaProps> = ({
           <li>alpha: {rotationRate?.alpha}</li>
           <li>beta: {rotationRate?.beta}</li>
           <li>gamma: {rotationRate?.gamma}</li>
+        </ul>
+      </li>
+      <li>
+        orientation
+        <ul>
+          <li>alpha: {orientation?.alpha}</li>
+          <li>beta: {orientation?.beta}</li>
+          <li>gamma: {orientation?.gamma}</li>
         </ul>
       </li>
       <li>interval: {interval}</li>

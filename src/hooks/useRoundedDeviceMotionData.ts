@@ -7,6 +7,7 @@ export const useRoundedDeviceMotionData = ({
   accelerationIncludingGravity,
   rotationRate,
   interval,
+  orientation,
 }:DeviceMotionData): UseRoundedDeviceMotionData => {
   const roundOrZero = (data: number | null | undefined): number => {
     if (data === null || data === undefined) {
@@ -33,5 +34,10 @@ export const useRoundedDeviceMotionData = ({
       gamma: roundOrZero(rotationRate?.gamma),
     },
     interval: roundOrZero(interval),
+    orientation: {
+      alpha: roundOrZero(orientation?.alpha),
+      beta: roundOrZero(orientation?.beta),
+      gamma: roundOrZero(orientation?.gamma),
+    },
   }
 }
