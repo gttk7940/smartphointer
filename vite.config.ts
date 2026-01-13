@@ -6,6 +6,6 @@ export default defineConfig({
   plugins: [react()],
   base: '/smartphointer/',
   build: {
-    outDir: 'docs',
+    outDir: 'dist',
   },
 })
