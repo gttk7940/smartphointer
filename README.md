@@ -13,7 +13,7 @@
 
 ### Signaling
 - `cd server`
-- `npm install`（作成後）
+- `npm install`
 
 ## スクリプト
 以下は `apps` 配下で実行します。
