@@ -4,12 +4,6 @@ export type DeviceOrientationData = {
   gamma: number | null
 }
 
-export type RoundedDeviceOrientationData = {
-  alpha: number
-  beta: number
-  gamma: number
-}
-
 export type DeviceOrientationEventWithRequestPermission = DeviceOrientationEvent & {
   requestPermission?: () => Promise<PermissionState>
 }

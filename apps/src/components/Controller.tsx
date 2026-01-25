@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { FC } from 'react'
 import { useDeviceOrientation } from '../hooks/useDeviceOrientation'
-import { useRoundedDeviceOrientationData } from '../hooks/useRoundedDeviceOrientationData'
 import { useWebRtcDataChannel } from '../hooks/useWebRtcDataChannel'
 import { useRoomId } from '../hooks/useRoomId'
 import { getSignalingUrl } from '../domain/signaling'
+import { toPointerPosition } from '../domain/pointer'
 
 export const Controller: FC = () => {
   const roomId = useRoomId()
@@ -13,7 +13,10 @@ export const Controller: FC = () => {
     orientation: originalOrientation,
     handleRequestDeviceOrientationPermission,
   } = useDeviceOrientation()
-  const orientation = useRoundedDeviceOrientationData(originalOrientation)
+  const position = useMemo(
+    () => toPointerPosition(originalOrientation),
+    [originalOrientation],
+  )
 
   const { send, isConnected } = useWebRtcDataChannel({
     roomId,
@@ -22,14 +25,14 @@ export const Controller: FC = () => {
   })
 
   useEffect(() => {
-    if (!roomId || !isConnected || !originalOrientation) return
+    if (!roomId || !isConnected || !position) return
     send(
       JSON.stringify({
-        type: 'orientation',
-        payload: orientation,
+        type: 'pointer',
+        payload: position,
       }),
     )
-  }, [isConnected, originalOrientation, orientation, roomId, send])
+  }, [isConnected, position, roomId, send])
 
   if (!roomId) {
     return (

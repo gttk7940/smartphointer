@@ -1,13 +1,14 @@
 import { useEffect, useRef } from 'react'
 import type { FC } from 'react'
-import type { RoundedDeviceOrientationData } from '../domain/type'
+import type { PointerPosition } from '../domain/pointer'
+import { pointerCanvasSize, pointerRange } from '../domain/pointer'
 
 type PointerCanvasProps = {
-  orientation: RoundedDeviceOrientationData
+  position: PointerPosition
 }
 
 // レーザーポインター表示用のキャンバス。
-export const PointerCanvas: FC<PointerCanvasProps> = ({ orientation }) => {
+export const PointerCanvas: FC<PointerCanvasProps> = ({ position }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
@@ -17,17 +18,8 @@ export const PointerCanvas: FC<PointerCanvasProps> = ({ orientation }) => {
     if (!ctx) return
 
     const { width, height } = canvas
-    const padding = 12
-    const plotWidth = width - padding * 2
-    const plotHeight = height - padding * 2
-
-    const clamp = (value: number, min: number, max: number) =>
-      Math.max(min, Math.min(max, value))
-    const xValue = clamp(orientation.alpha, -180, 180)
-    const yValue = clamp(orientation.beta, -180, 180)
-
-    const x = padding + ((xValue + 180) / 360) * plotWidth
-    const y = padding + ((-yValue + 180) / 360) * plotHeight
+    const centerX = width / 2
+    const centerY = height / 2
 
     ctx.clearRect(0, 0, width, height)
     ctx.fillStyle = '#ffffff'
@@ -37,18 +29,21 @@ export const PointerCanvas: FC<PointerCanvasProps> = ({ orientation }) => {
     ctx.lineWidth = 1
     ctx.strokeRect(0.5, 0.5, width - 1, height - 1)
 
+    const x = centerX + Math.max(-pointerRange, Math.min(pointerRange, position.x))
+    const y = centerY - Math.max(-pointerRange, Math.min(pointerRange, position.y))
+
     ctx.fillStyle = '#ef4444'
     ctx.beginPath()
     ctx.arc(x, y, 8, 0, Math.PI * 2)
     ctx.fill()
-  }, [orientation])
+  }, [position])
 
   return (
     <div>
       <canvas
         ref={canvasRef}
-        width={360}
-        height={360}
+        width={pointerCanvasSize.width}
+        height={pointerCanvasSize.height}
         style={{ display: 'block' }}
       />
     </div>

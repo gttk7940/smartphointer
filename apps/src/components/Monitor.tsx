@@ -5,17 +5,12 @@ import { useWebRtcDataChannel } from '../hooks/useWebRtcDataChannel'
 import { useRoomId } from '../hooks/useRoomId'
 import { getSignalingUrl } from '../domain/signaling'
 import { PointerCanvas } from './PointerCanvas'
-import type { RoundedDeviceOrientationData } from '../domain/type'
-
-const defaultOrientation: RoundedDeviceOrientationData = {
-  alpha: 0,
-  beta: 0,
-  gamma: 0,
-}
+import type { PointerPosition } from '../domain/pointer'
+import { defaultPointerPosition } from '../domain/pointer'
 
 export const Monitor: FC = () => {
   const roomId = useRoomId({ generateIfMissing: true })
-  const [orientation, setOrientation] = useState(defaultOrientation)
+  const [position, setPosition] = useState<PointerPosition>(defaultPointerPosition)
 
   const controllerUrl = useMemo(() => {
     if (!roomId) return null
@@ -28,10 +23,10 @@ export const Monitor: FC = () => {
     try {
       const message = JSON.parse(raw) as {
         type?: string
-        payload?: RoundedDeviceOrientationData
+        payload?: PointerPosition
       }
-      if (message.type === 'orientation' && message.payload) {
-        setOrientation(message.payload)
+      if (message.type === 'pointer' && message.payload) {
+        setPosition(message.payload)
       }
     } catch (error) {
       console.error(error)
@@ -55,7 +50,7 @@ export const Monitor: FC = () => {
         </div>
       )}
       <p>接続状態: {isConnected ? '接続済み' : '接続待ち'}</p>
-      {isConnected && <PointerCanvas orientation={orientation} />}
+      {isConnected && <PointerCanvas position={position} />}
     </>
   )
 }

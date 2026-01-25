@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type {
   DeviceOrientationData,
   DeviceOrientationEventWithRequestPermission,
-} from '../domain/type'
+} from '../domain/deviceOrientation'
 
 export type UseDeviceOrientation = {
   orientation: DeviceOrientationData | null
@@ -11,48 +11,52 @@ export type UseDeviceOrientation = {
 
 export const useDeviceOrientation = (): UseDeviceOrientation => {
   const [orientation, setOrientation] = useState<DeviceOrientationData | null>(null)
+  const isListeningRef = useRef(false)
 
-  const handleDeviceOrientation = (event: DeviceOrientationEvent) => {
+  const handleDeviceOrientation = useCallback((event: DeviceOrientationEvent) => {
     setOrientation({
       alpha: event.alpha,
       beta: event.beta,
       gamma: event.gamma,
     })
-  }
+  }, [])
 
-  const handleRequestDeviceOrientationPermission = () => {
+  const startListening = useCallback(() => {
+    if (isListeningRef.current) return
+    window.addEventListener('deviceorientation', handleDeviceOrientation)
+    isListeningRef.current = true
+  }, [handleDeviceOrientation])
+
+  const handleRequestDeviceOrientationPermission = useCallback(() => {
     const DeviceOrientationEvent = window.DeviceOrientationEvent as unknown as DeviceOrientationEventWithRequestPermission
     if (
       DeviceOrientationEvent &&
       typeof DeviceOrientationEvent.requestPermission === 'function'
     ) {
-      // iOS 13+ の Safari
-      // 許可を取得
       DeviceOrientationEvent.requestPermission()
-      .then(permissionState => {
-        if (permissionState === 'granted') {
-          // 許可を得られた場合、deviceorientationをイベントリスナーに追加
-          window.addEventListener('deviceorientation', e => {
-            // deviceorientationのイベント処理
-            handleDeviceOrientation(e)
-          })
-        } else {
-          // 許可を得られなかった場合の処理
-          window.alert('Device orientation permission denied')
-        }
-      })
-      .catch(console.error) // https通信でない場合などで許可を取得できなかった場合
+        .then((permissionState) => {
+          if (permissionState === 'granted') {
+            startListening()
+          } else {
+            window.alert('Device orientation permission denied')
+          }
+        })
+        .catch(console.error)
     } else {
-      // 上記以外のブラウザ
-      window.addEventListener('deviceorientation', e => {
-        // deviceorientationのイベント処理
-        handleDeviceOrientation(e)
-      })
+      startListening()
     }
-  }
-  
+  }, [startListening])
+
+  useEffect(() => {
+    return () => {
+      if (!isListeningRef.current) return
+      window.removeEventListener('deviceorientation', handleDeviceOrientation)
+      isListeningRef.current = false
+    }
+  }, [handleDeviceOrientation])
+
   return {
     orientation,
-    handleRequestDeviceOrientationPermission: handleRequestDeviceOrientationPermission,
+    handleRequestDeviceOrientationPermission,
   }
 }
