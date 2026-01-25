@@ -1,12 +1,21 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import type { FC } from 'react'
 import { QRCodeCanvas } from 'qrcode.react'
 import { useWebRtcDataChannel } from '../hooks/useWebRtcDataChannel'
 import { useRoomId } from '../hooks/useRoomId'
 import { getSignalingUrl } from '../domain/signaling'
+import { PointerCanvas } from './PointerCanvas'
+import type { RoundedDeviceOrientationData } from '../domain/type'
+
+const defaultOrientation: RoundedDeviceOrientationData = {
+  alpha: 0,
+  beta: 0,
+  gamma: 0,
+}
 
 export const Monitor: FC = () => {
   const roomId = useRoomId({ generateIfMissing: true })
+  const [orientation, setOrientation] = useState(defaultOrientation)
 
   const controllerUrl = useMemo(() => {
     if (!roomId) return null
@@ -15,10 +24,25 @@ export const Monitor: FC = () => {
     return url.toString()
   }, [roomId])
 
+  const handleMessage = useCallback((raw: string) => {
+    try {
+      const message = JSON.parse(raw) as {
+        type?: string
+        payload?: RoundedDeviceOrientationData
+      }
+      if (message.type === 'orientation' && message.payload) {
+        setOrientation(message.payload)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }, [])
+
   const { isConnected } = useWebRtcDataChannel({
     roomId,
     isInitiator: true,
     signalingUrl: getSignalingUrl(),
+    onMessage: handleMessage,
   })
 
   return (
@@ -31,6 +55,7 @@ export const Monitor: FC = () => {
         </div>
       )}
       <p>接続状態: {isConnected ? '接続済み' : '接続待ち'}</p>
+      {isConnected && <PointerCanvas orientation={orientation} />}
     </>
   )
 }
