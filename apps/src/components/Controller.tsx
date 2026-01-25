@@ -1,24 +1,20 @@
 import type { FC } from 'react'
-import { InformationArea } from './InformationArea';
-import { useDeviceOrientation } from '../hooks/useDeviceOrientation';
-import { useRoundedDeviceOrientationData } from '../hooks/useRoundedDeviceOrientationData';
+import { useWebRtcDataChannel } from '../hooks/useWebRtcDataChannel'
+import { useRoomId } from '../hooks/useRoomId'
+import { getSignalingUrl } from '../domain/signaling'
 
 export const Controller: FC = () => {
-  const {
-    orientation: originalOrientation,
-    handleRequestDeviceOrientationPermission,
-  } = useDeviceOrientation()
+  const roomId = useRoomId()
 
-  const orientation = useRoundedDeviceOrientationData(originalOrientation)
+  const { isConnected } = useWebRtcDataChannel({
+    roomId,
+    isInitiator: false,
+    signalingUrl: getSignalingUrl(),
+  })
 
-  return (
-    <>
-      <InformationArea
-        orientation={orientation}
-      />
-      <button onClick={handleRequestDeviceOrientationPermission}>
-        DeviceOrientationEvent.requestPermission()
-      </button>
-    </>
-  )
+  if (!roomId) {
+    return <div>モニターで表示された URL からアクセスしてください。</div>
+  }
+
+  return <p>{isConnected ? '接続済み' : '接続中...'}</p>
 }
