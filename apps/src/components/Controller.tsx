@@ -13,8 +13,8 @@ export const Controller: FC = () => {
   })
 
   if (!roomId) {
-    return <div>モニターで表示された URL からアクセスしてください。</div>
+    return <p>モニターで表示された QR コードをカメラで読み取って接続してください。</p>
   }
 
-  return <p>{isConnected ? '接続済み' : '接続中...'}</p>
+  return <p>接続状態: {isConnected ? '接続済み' : '接続中...'}</p>
 }

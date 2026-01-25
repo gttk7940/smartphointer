@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import type { FC } from 'react'
+import { QRCodeCanvas } from 'qrcode.react'
 import { useWebRtcDataChannel } from '../hooks/useWebRtcDataChannel'
 import { useRoomId } from '../hooks/useRoomId'
 import { getSignalingUrl } from '../domain/signaling'
@@ -22,15 +23,14 @@ export const Monitor: FC = () => {
 
   return (
     <>
-      <p>スマホで以下の URL を開いて接続してください。</p>
-      {controllerUrl ? (
-        <p>
-          <a href={controllerUrl}>{controllerUrl}</a>
-        </p>
-      ) : (
-        <p>接続用 URL を準備中です。</p>
+      <p>スマホのカメラで以下の接続用 QR コードを読み取ってください。</p>
+      {!controllerUrl && <p>接続用 QR コードを準備中です。</p>}
+      {!isConnected && controllerUrl && (
+        <div>
+          <QRCodeCanvas value={controllerUrl} size={200} />
+        </div>
       )}
-      <p>{isConnected ? '接続済み' : '接続待ち'}</p>
+      <p>接続状態: {isConnected ? '接続済み' : '接続待ち'}</p>
     </>
   )
 }
