@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import type { FC } from 'react'
 import type { PointerPosition } from '../domain/pointer'
-import { pointerCanvasSize, pointerRange } from '../domain/pointer'
+import { pointerRange } from '../domain/pointer'
 
 type PointerCanvasProps = {
   position: PointerPosition
@@ -18,19 +18,15 @@ export const PointerCanvas: FC<PointerCanvasProps> = ({ position }) => {
     if (!ctx) return
 
     const { width, height } = canvas
-    const centerX = width / 2
-    const centerY = height / 2
 
     ctx.clearRect(0, 0, width, height)
     ctx.fillStyle = '#ffffff'
     ctx.fillRect(0, 0, width, height)
 
-    ctx.strokeStyle = '#0f172a'
-    ctx.lineWidth = 1
-    ctx.strokeRect(0.5, 0.5, width - 1, height - 1)
-
-    const x = centerX + Math.max(-pointerRange, Math.min(pointerRange, position.x))
-    const y = centerY - Math.max(-pointerRange, Math.min(pointerRange, position.y))
+    const xRatio = Math.max(-pointerRange, Math.min(pointerRange, position.x)) / pointerRange
+    const yRatio = Math.max(-pointerRange, Math.min(pointerRange, position.y)) / pointerRange
+    const x = ((xRatio + 1) / 2) * width
+    const y = ((-yRatio + 1) / 2) * height
 
     ctx.fillStyle = '#ef4444'
     ctx.beginPath()
@@ -42,9 +38,9 @@ export const PointerCanvas: FC<PointerCanvasProps> = ({ position }) => {
     <div>
       <canvas
         ref={canvasRef}
-        width={pointerCanvasSize.width}
-        height={pointerCanvasSize.height}
-        style={{ display: 'block' }}
+        width={window.innerWidth}
+        height={Math.floor(window.innerHeight * 0.8)}
+        style={{ display: 'block', width: '100vw', height: '80vh' }}
       />
     </div>
   )

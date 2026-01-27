@@ -5,11 +5,6 @@ export type PointerPosition = {
 
 export const pointerRange = 100
 
-export const pointerCanvasSize = {
-  width: pointerRange * 2,
-  height: pointerRange * 2,
-}
-
 export const defaultPointerPosition: PointerPosition = {
   x: 0,
   y: 0,
