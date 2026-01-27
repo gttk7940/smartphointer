@@ -1,5 +1,3 @@
-import type { DeviceOrientationData } from './deviceOrientation'
-
 export type PointerPosition = {
   x: number
   y: number
@@ -20,22 +18,37 @@ export const defaultPointerPosition: PointerPosition = {
 const clamp = (value: number, min: number, max: number) =>
   Math.max(min, Math.min(max, value))
 
-const toRoundedValue = (value: number | null | undefined) => {
-  if (value === null || value === undefined) return null
-  return Math.round(value)
+export const mapToRange = (value: number, start: number, end: number) => {
+  if (start === end) return 0
+  const ratio = (value - start) / (end - start)
+  const clampedRatio = clamp(ratio, 0, 1)
+  return clamp((clampedRatio * 2 - 1) * pointerRange, -pointerRange, pointerRange)
+}
+
+export type PointerCalibration = {
+  topLeft: {
+    alpha: number
+    beta: number
+  }
+  bottomRight: {
+    alpha: number
+    beta: number
+  }
 }
 
 export const toPointerPosition = (
-  orientation: DeviceOrientationData | null,
-): PointerPosition | null => {
-  if (!orientation) return null
-  const alpha = toRoundedValue(orientation.alpha)
-  const beta = toRoundedValue(orientation.beta)
-  if (alpha === null || beta === null) return null
+  alpha: number,
+  beta: number,
+  calibration: PointerCalibration | null,
+): PointerPosition => {
+  if (calibration) {
+    return {
+      x: mapToRange(alpha, calibration.topLeft.alpha, calibration.bottomRight.alpha),
+      y: mapToRange(beta, calibration.topLeft.beta, calibration.bottomRight.beta),
+    }
+  }
 
-  const toRange = (value: number) =>
-    clamp(Math.round((value / 180) * pointerRange), -pointerRange, pointerRange)
-
+  const toRange = (value: number) => clamp((value / 180) * pointerRange, -pointerRange, pointerRange)
   return {
     x: toRange(alpha),
     y: toRange(beta),

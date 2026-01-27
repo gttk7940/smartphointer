@@ -1,10 +1,10 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import type { FC } from 'react'
 import { useDeviceOrientation } from '../hooks/useDeviceOrientation'
 import { useWebRtcDataChannel } from '../hooks/useWebRtcDataChannel'
 import { useRoomId } from '../hooks/useRoomId'
 import { getSignalingUrl } from '../domain/signaling'
-import { toPointerPosition } from '../domain/pointer'
+import { usePointer } from '../hooks/usePointer'
 
 export const Controller: FC = () => {
   const roomId = useRoomId()
@@ -13,10 +13,8 @@ export const Controller: FC = () => {
     orientation: originalOrientation,
     handleRequestDeviceOrientationPermission,
   } = useDeviceOrientation()
-  const position = useMemo(
-    () => toPointerPosition(originalOrientation),
-    [originalOrientation],
-  )
+  const { position, step, startCalibration, confirmTopLeft, confirmBottomRight } =
+    usePointer(originalOrientation)
 
   const { send, isConnected } = useWebRtcDataChannel({
     roomId,
@@ -49,6 +47,13 @@ export const Controller: FC = () => {
       <button onClick={handleRequestDeviceOrientationPermission}>
         センサの使用を許可
       </button>
+      <button onClick={startCalibration}>位置を調整</button>
+      {step === 'topLeft' && (
+        <button onClick={confirmTopLeft}>左上端を指しています</button>
+      )}
+      {step === 'bottomRight' && (
+        <button onClick={confirmBottomRight}>右下端を指しています</button>
+      )}
     </div>
   )
 }
