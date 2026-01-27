@@ -47,7 +47,7 @@ export const Controller: FC = () => {
       <button onClick={handleRequestDeviceOrientationPermission}>
         センサの使用を許可
       </button>
-      <button onClick={startCalibration}>位置を調整</button>
+      {step === 'idle' && <button onClick={startCalibration}>位置を調整</button>}
       {step === 'topLeft' && (
         <button onClick={confirmTopLeft}>左上端を指しています</button>
       )}
