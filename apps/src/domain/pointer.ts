@@ -38,14 +38,14 @@ export const toPointerPosition = (
 ): PointerPosition => {
   if (calibration) {
     return {
-      x: mapToRange(alpha, calibration.topLeft.alpha, calibration.bottomRight.alpha),
+      x: -mapToRange(alpha, calibration.topLeft.alpha, calibration.bottomRight.alpha),
       y: -mapToRange(beta, calibration.topLeft.beta, calibration.bottomRight.beta),
     }
   }
 
   const toRange = (value: number) => clamp((value / 180) * pointerRange, -pointerRange, pointerRange)
   return {
-    x: toRange(alpha),
+    x: -toRange(alpha),
     y: -toRange(beta),
   }
 }
