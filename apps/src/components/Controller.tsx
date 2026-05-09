@@ -42,18 +42,27 @@ export const Controller: FC = () => {
   }
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <p>接続状態: {isConnected ? '接続済み' : '接続中...'}</p>
       <button onClick={handleRequestDeviceOrientationPermission}>
         センサの使用を許可
       </button>
-      {step === 'idle' && <button onClick={startCalibration}>位置を調整</button>}
-      {step === 'topLeft' && (
-        <button onClick={confirmTopLeft}>左上端を指しています</button>
-      )}
-      {step === 'bottomRight' && (
-        <button onClick={confirmBottomRight}>右下端を指しています</button>
-      )}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {step === 'idle' && <button onClick={startCalibration}>位置を調整</button>}
+        {step === 'topLeft' && (
+          <button onClick={confirmTopLeft}>左上端を指しています</button>
+        )}
+        {step === 'bottomRight' && (
+          <button onClick={confirmBottomRight}>右下端を指しています</button>
+        )}
+      </div>
     </div>
   )
 }
