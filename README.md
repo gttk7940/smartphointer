@@ -4,7 +4,7 @@
 
 ## ディレクトリ構成
 - `apps` モニターアプリ・コントローラアプリ（SPA）
-- `server` シグナリングサーバ（準備中）
+- `server` シグナリングサーバ（Cloud Run にデプロイ済み）
 
 ## セットアップ
 ### Web
@@ -21,4 +21,4 @@
 - `npm run build` 型チェック込みで本番ビルドを作成します（出力先: `dist/`）。
 - `npm run preview` ビルド済み成果物をローカルでプレビューします。
 - `npm run lint` ESLint を実行します。
-- `npm run deploy` `dist/` を GitHub Pages 用にコミット・プッシュします。
+- `npm run deploy` `npm run build` 後に `git add . && git commit -m 'deploy' && git push origin main` を実行します。GitHub Pages へのデプロイは main への push を契機に GitHub Actions（`.github/workflows/deploy.yml`）が `apps/dist` をアップロードする形で行われます。
