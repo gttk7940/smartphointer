@@ -135,8 +135,7 @@ npm start         # node dist/index.js
 ## 既知の特性・注意点
 
 - **iOS の DeviceOrientationEvent**: ユーザ操作起点の `requestPermission()` が必要。`useDeviceOrientation` で対応済み。許可拒否時は `window.alert`。
-- **キャリブレーション前の座標**: `toPointerPosition` の calibration null 分岐は `(value/180)*100` を ±100 にクランプするだけで、意味のあるマッピングではない。実用は必ずキャリブ後。
-- **再接続**: `useWebRtcDataChannel` は `roomId` 変化を依存にしているため、同一 roomId のまま切断された場合に再シグナリングは始まらない（Monitor の `isConnected=false` には戻るが QR を再描画して相手が貼り直すのを待つ形）。仕様「切断後に再び QR」とは挙動が一致しない疑いがあるので、修正フェーズでは要検証。
+- **再接続**: 自動再接続は実装しない方針。切断時は Monitor 側に QR が再表示されるので、両端をリロードして同じ roomId で繋ぎ直す運用。`useWebRtcDataChannel` は `roomId` 変化を依存にしているため、同一 roomId のまま自動的に再シグナリングは始まらない。
 - **ルーム上限**: server 側は同一ルーム最大 2 接続、3 番目は `1008 'room is full'` で拒否。
 - **`react-device-detect`** で Monitor/Controller を切替えているため、PC で開きたいのに iPad 等の判定で Controller になることがある。デバッグ時は端末判定を意識する。
 
