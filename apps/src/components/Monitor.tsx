@@ -42,13 +42,14 @@ export const Monitor: FC = () => {
 
   return (
     <>
-      <p>スマホのカメラで以下の接続用 QR コードを読み取ってください。</p>
-      {!controllerUrl && <p>接続用 QR コードを準備中です。</p>}
-      {!isConnected && controllerUrl && (
-        <div>
+      {!isConnected && (controllerUrl ? (
+        <>
+          <p>スマホのカメラで以下の接続用 QR コードを読み取ってください。</p>
           <QRCodeCanvas value={controllerUrl} size={200} />
-        </div>
-      )}
+        </>
+      ) : (
+        <p>接続用 QR コードを準備中です。</p>
+      ))}
       <p>接続状態: {isConnected ? '接続済み' : '接続待ち'}</p>
       {isConnected && <PointerCanvas position={position} />}
     </>
