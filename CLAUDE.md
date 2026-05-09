@@ -97,41 +97,6 @@ smartphointer/
 6. `onopen` で WebSocket は閉じる。以降 Controller → Monitor へ `{type:'pointer', payload:{x,y}}` を流す
 7. ジャイロ値 (alpha, beta) は `usePointer` でキャリブ範囲（topLeft/bottomRight）を ±100 にマッピング → Monitor の Canvas へ
 
-## 開発コマンド
-
-apps（Vite SPA）:
-```
-cd apps
-npm install
-npm run dev       # ローカル開発
-npm run build     # tsc -b && vite build
-npm run lint
-npm run preview
-```
-
-server（シグナリング、ローカル動作確認用）:
-```
-cd server
-npm install
-npm run dev       # tsx watch、:8080 で待ち受け
-npm run build     # tsc → dist/
-npm start         # node dist/index.js
-```
-
-ローカルで通しで動かすには両方を別ターミナルで起動。`apps/.env.local` の `VITE_SIGNALING_URL` は localhost で開いた場合は無視され、強制的に `ws://localhost:8080` が使われる（`apps/src/domain/signaling.ts`）。
-
-## デプロイ
-
-- **apps（GitHub Pages）**: main への push で `.github/workflows/deploy.yml` が走る。GitHub Actions Variables の `VITE_SIGNALING_URL` を埋め込んでビルドし、`apps/dist` を Pages へアップロードする（`dist` は `.gitignore` 済みで commit には含まれない）。
-- **server（Cloud Run）**: `server/package.json` の `npm run deploy` で `gcloud run deploy smartphointer-signaling`（asia-northeast1, min 0 / max 1, 256Mi, 1 CPU）。
-
-## 環境変数
-
-| 名前 | 場所 | 用途 |
-| --- | --- | --- |
-| `VITE_SIGNALING_URL` | `apps/.env.local`, GitHub Actions Variables | シグナリング WebSocket の本番 URL（localhost 時は無視され `ws://localhost:8080` 固定） |
-| `PORT` | server 実行環境 | WebSocketServer の listen port（既定 8080）|
-
 ## 既知の特性・注意点
 
 - **iOS の DeviceOrientationEvent**: ユーザ操作起点の `requestPermission()` が必要。`useDeviceOrientation` で対応済み。許可拒否時は `window.alert`。
