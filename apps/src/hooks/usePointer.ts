@@ -18,6 +18,7 @@ const toPointerPositionFromOrientation = (
   calibration: PointerCalibration | null,
 ): PointerPosition | null => {
   if (!orientation) return null
+  if (!calibration) return null
   const alpha = orientation.alpha
   const beta = orientation.beta
   if (alpha === null || alpha === undefined) return null
