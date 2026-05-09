@@ -83,9 +83,8 @@ smartphointer/
 │   │       └── useWebRtcDataChannel.ts WebSocket シグナリング＋ RTCPeerConnection を 1 つの effect で管理
 │   ├── .env.local             VITE_SIGNALING_URL（git ignore 済み）
 │   └── vite.config.ts         base: '/smartphointer/'（GitHub Pages 用）
-├── server/                    シグナリングサーバ（Cloud Run 上の WebSocketServer）
-│   └── src/index.ts           1 ルーム最大 2 接続。受信メッセージはルーム内の他方へ broadcast。
-└── src/components/            空ディレクトリ。リポジトリのトップに残置（git 追跡外）
+└── server/                    シグナリングサーバ（Cloud Run 上の WebSocketServer）
+    └── src/index.ts           1 ルーム最大 2 接続。受信メッセージはルーム内の他方へ broadcast。
 ```
 
 ## 通信フロー（実装目線）
@@ -140,7 +139,6 @@ npm start         # node dist/index.js
 - **キャリブレーション前の座標**: `toPointerPosition` の calibration null 分岐は `(value/180)*100` を ±100 にクランプするだけで、意味のあるマッピングではない。実用は必ずキャリブ後。
 - **再接続**: `useWebRtcDataChannel` は `roomId` 変化を依存にしているため、同一 roomId のまま切断された場合に再シグナリングは始まらない（Monitor の `isConnected=false` には戻るが QR を再描画して相手が貼り直すのを待つ形）。仕様「切断後に再び QR」とは挙動が一致しない疑いがあるので、修正フェーズでは要検証。
 - **ルーム上限**: server 側は同一ルーム最大 2 接続、3 番目は `1008 'room is full'` で拒否。
-- **`apps/src/components` と `src/components`**: 後者（リポジトリ直下の `src/components`）は空で git 未追跡。残骸の可能性。
 - **`react-device-detect`** で Monitor/Controller を切替えているため、PC で開きたいのに iPad 等の判定で Controller になることがある。デバッグ時は端末判定を意識する。
 
 ## 私（Claude）が編集を始める前に
