@@ -8,9 +8,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "lint": "eslint .",
-    "git": "git add . && git commit -m 'deploy' && git push origin main",
-    "deploy": "npm run build && npm run git"
+    "lint": "eslint ."
   },
   "dependencies": {
     "qrcode.react": "^4.2.0",

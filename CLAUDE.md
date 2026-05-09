@@ -122,8 +122,7 @@ npm start         # node dist/index.js
 
 ## デプロイ
 
-- **apps（GitHub Pages）**: main への push で `.github/workflows/deploy.yml` が走る。GitHub Actions Variables の `VITE_SIGNALING_URL` を埋め込んでビルドし、`apps/dist` を Pages へアップロードする。
-  - `apps/package.json` の `npm run deploy`（`git add . && git commit -m 'deploy' && git push origin main`）は手動 push のショートカットに過ぎず、現在は dist を git に含めるわけではない（`.gitignore` で `**/dist` 除外、CI ビルド成果物のみ Pages へ上がる）。README の説明は実態と乖離している。
+- **apps（GitHub Pages）**: main への push で `.github/workflows/deploy.yml` が走る。GitHub Actions Variables の `VITE_SIGNALING_URL` を埋め込んでビルドし、`apps/dist` を Pages へアップロードする（`dist` は `.gitignore` 済みで commit には含まれない）。
 - **server（Cloud Run）**: `server/package.json` の `npm run deploy` で `gcloud run deploy smartphointer-signaling`（asia-northeast1, min 0 / max 1, 256Mi, 1 CPU）。
 
 ## 環境変数
