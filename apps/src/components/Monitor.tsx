@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import type { FC } from 'react'
-import { QRCodeCanvas } from 'qrcode.react'
+import { QrCode, Text, VStack } from '@chakra-ui/react'
 import { useWebRtcDataChannel } from '../hooks/useWebRtcDataChannel'
 import { useRoomId } from '../hooks/useRoomId'
 import { getSignalingUrl } from '../domain/signaling'
@@ -41,17 +41,22 @@ export const Monitor: FC = () => {
   })
 
   return (
-    <>
-      {!isConnected && (controllerUrl ? (
-        <>
-          <p>スマホのカメラで以下の接続用 QR コードを読み取ってください。</p>
-          <QRCodeCanvas value={controllerUrl} size={200} />
-        </>
-      ) : (
-        <p>接続用 QR コードを準備中です。</p>
-      ))}
-      <p>接続状態: {isConnected ? '接続済み' : '接続待ち'}</p>
+    <VStack p={5}>
+      {!isConnected &&
+        (controllerUrl ? (
+          <>
+            <Text>スマホのカメラで以下の接続用 QR コードを読み取ってください。</Text>
+            <QrCode.Root value={controllerUrl} size="2xl">
+              <QrCode.Frame>
+                <QrCode.Pattern />
+              </QrCode.Frame>
+            </QrCode.Root>
+          </>
+        ) : (
+          <Text>接続用 QR コードを準備中です。</Text>
+        ))}
+      <Text>接続状態: {isConnected ? '接続済み' : '接続待ち'}</Text>
       {isConnected && <PointerCanvas position={position} />}
-    </>
+    </VStack>
   )
 }
