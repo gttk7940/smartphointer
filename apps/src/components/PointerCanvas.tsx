@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import type { FC } from 'react'
+import { Box } from '@chakra-ui/react'
 import type { PointerPosition } from '../domain/pointer'
 import { pointerRange } from '../domain/pointer'
 
@@ -35,13 +36,13 @@ export const PointerCanvas: FC<PointerCanvasProps> = ({ position }) => {
   }, [position])
 
   return (
-    <div>
+    <Box>
       <canvas
         ref={canvasRef}
         width={window.innerWidth}
         height={Math.floor(window.innerHeight * 0.8)}
         style={{ display: 'block', width: '100vw', height: '80vh' }}
       />
-    </div>
+    </Box>
   )
 }
