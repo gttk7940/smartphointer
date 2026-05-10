@@ -1,9 +1,9 @@
 # smartphointer
 
-PC とスマホをレーザーポインタとして使えるかを試す PoC。スマホのジャイロセンサ値を WebRTC で PC に送り、PC 側のキャンバスに赤い円としてポインタを描画します。
+スマホをレーザーポインタとして使う Web アプリ。スマホのジャイロセンサ値を WebRTC で PC に送り、PC 側のキャンバスに赤い円としてポインタを描画します。
 
 ## ディレクトリ構成
-- `apps/` モニター・コントローラ兼用 SPA（Vite + React 19）
+- `apps/` モニター・コントローラ兼用 SPA（Vite + React 19 + Chakra UI v3）
 - `server/` シグナリング用 WebSocket サーバ（Cloud Run）
 - 仕様と実装メモは `CLAUDE.md`
 

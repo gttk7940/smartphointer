@@ -5,9 +5,9 @@
 ## アプリの概要
 
 本アプリはWeb アプリであり、スマホと PC を使いレーザーポインター機能を提供する。
-スマホをレーザーポインターとして使うことが技術的に可能かの PoC である。
+スマホをレーザーポインターとして使うことが技術的に可能かの PoC として開始し、動作確認を完了。今後はゲームとして複数ユーザに使ってもらうことを目指す。
 「何かの画面の上にポインターを重ねる」のではなく、「白いキャンバスにポインターを表示する」だけに絞る。
-PoC のため技術スタック・実装ともに最小限でシンプルさを重視する。
+依存ライブラリと実装はできるだけ最小限・シンプルに保つ。
 
 ## 技術スタック
 
@@ -20,8 +20,8 @@ PoC のため技術スタック・実装ともに最小限でシンプルさを�
     - GitHub Pages（ホスティング）
     - WebRTC
         - スマホ -> PC にジャイロセンサなどの値を送信する
-    - qrcode.react
-        - QR コード表示用
+    - Chakra UI v3
+        - UI コンポーネントライブラリ。QR コード表示（QrCode コンポーネント）も含む
 - シグナリングサーバー
     - Google Cloud Run
     - WebSocket
@@ -66,14 +66,14 @@ smartphointer/
 ├── .github/workflows/deploy.yml  main への push で apps を GitHub Pages へ自動デプロイ
 ├── apps/                      モニター・コントローラを兼ねる SPA（Vite + React 19）
 │   ├── src/
-│   │   ├── main.tsx           エントリ
+│   │   ├── main.tsx           エントリ（ChakraProvider でラップ）
 │   │   ├── components/
 │   │   │   ├── App.tsx        react-device-detect の isMobile で Monitor/Controller を切替
 │   │   │   ├── Monitor.tsx    PC 側。QR 表示・WebRTC initiator・受信 position を Canvas に反映
 │   │   │   ├── Controller.tsx スマホ側。センサ許可ボタン・キャリブ UI・position 送信
 │   │   │   └── PointerCanvas.tsx 白背景に赤い円を描画
 │   │   ├── domain/
-│   │   │   ├── pointer.ts     PointerPosition, PointerCalibration, mapToRange, toPointerPosition
+│   │   │   ├── pointer.ts     PointerPosition, PointerCalibration, toPointerPosition（角度の最短経路補間）
 │   │   │   ├── deviceOrientation.ts ジャイロ用の型のみ
 │   │   │   └── signaling.ts   getSignalingUrl()（localhost なら ws://localhost:8080、それ以外は VITE_SIGNALING_URL）
 │   │   └── hooks/
