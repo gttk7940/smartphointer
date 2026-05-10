@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import type { FC } from 'react'
+import { Button, Center, Text, VStack } from '@chakra-ui/react'
 import { useDeviceOrientation } from '../hooks/useDeviceOrientation'
 import { useWebRtcDataChannel } from '../hooks/useWebRtcDataChannel'
 import { useRoomId } from '../hooks/useRoomId'
@@ -8,14 +9,10 @@ import { usePointer } from '../hooks/usePointer'
 
 export const Controller: FC = () => {
   const roomId = useRoomId()
-
-  const {
-    orientation: originalOrientation,
-    handleRequestDeviceOrientationPermission,
-  } = useDeviceOrientation()
+  const { orientation, handleRequestDeviceOrientationPermission } =
+    useDeviceOrientation()
   const { position, step, startCalibration, confirmTopLeft, confirmBottomRight } =
-    usePointer(originalOrientation)
-
+    usePointer(orientation)
   const { send, isConnected } = useWebRtcDataChannel({
     roomId,
     isInitiator: false,
@@ -24,45 +21,40 @@ export const Controller: FC = () => {
 
   useEffect(() => {
     if (!roomId || !isConnected || !position) return
-    send(
-      JSON.stringify({
-        type: 'pointer',
-        payload: position,
-      }),
-    )
+    send(JSON.stringify({ type: 'pointer', payload: position }))
   }, [isConnected, position, roomId, send])
 
   if (!roomId) {
     return (
-      <div>
-        <p>モニターで表示された QR コードをカメラで読み取って接続してください。</p>
-        <p>スマホのカメラアプリを起動して QR を読み取ります。</p>
-      </div>
+      <VStack p={5}>
+        <Text>モニターで表示された QR コードをカメラで読み取って接続してください。</Text>
+        <Text>スマホのカメラアプリを起動して QR を読み取ります。</Text>
+      </VStack>
     )
   }
 
+  const action = {
+    idle: { label: '位置を調整', onClick: startCalibration },
+    topLeft: { label: '左上端を指しています', onClick: confirmTopLeft },
+    bottomRight: { label: '右下端を指しています', onClick: confirmBottomRight },
+  }[step]
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <p>接続状態: {isConnected ? '接続済み' : '接続中...'}</p>
-      <button onClick={handleRequestDeviceOrientationPermission}>
+    <VStack minH="100vh" p={5}>
+      <Text>接続状態: {isConnected ? '接続済み' : '接続中...'}</Text>
+      <Button onClick={handleRequestDeviceOrientationPermission}>
         センサの使用を許可
-      </button>
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        {step === 'idle' && <button onClick={startCalibration}>位置を調整</button>}
-        {step === 'topLeft' && (
-          <button onClick={confirmTopLeft}>左上端を指しています</button>
-        )}
-        {step === 'bottomRight' && (
-          <button onClick={confirmBottomRight}>右下端を指しています</button>
-        )}
-      </div>
-    </div>
+      </Button>
+      <Center flex="1">
+        <Button
+          w="75vw"
+          h="75vw"
+          fontSize="xl"
+          onClick={action.onClick}
+        >
+          {action.label}
+        </Button>
+      </Center>
+    </VStack>
   )
 }
