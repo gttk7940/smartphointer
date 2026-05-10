@@ -10,6 +10,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@chakra-ui/react": "^3.35.0",
+    "@emotion/react": "^11.14.0",
     "qrcode.react": "^4.2.0",
     "react": "^19.2.3",
     "react-device-detect": "^2.2.3",
